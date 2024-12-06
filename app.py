@@ -20,41 +20,60 @@ SCOPE = 'user-modify-playback-state user-read-playback-state user-read-currently
 # Fila de músicas
 song_queue = []
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/login')
-def login():
-    sp_oauth = SpotifyOAuth(
+def create_spotify_oauth():
+    return SpotifyOAuth(
         client_id=SPOTIPY_CLIENT_ID,
         client_secret=SPOTIPY_CLIENT_SECRET,
         redirect_uri=SPOTIPY_REDIRECT_URI,
-        scope=SCOPE
+        scope=SCOPE,
+        cache_path=None
     )
+
+@app.route('/')
+def index():
+    if not session.get('token_info'):
+        return render_template('index.html', logged_in=False)
+    return render_template('index.html', logged_in=True)
+
+@app.route('/login')
+def login():
+    sp_oauth = create_spotify_oauth()
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 
 @app.route('/callback')
 def callback():
-    sp_oauth = SpotifyOAuth(
-        client_id=SPOTIPY_CLIENT_ID,
-        client_secret=SPOTIPY_CLIENT_SECRET,
-        redirect_uri=SPOTIPY_REDIRECT_URI,
-        scope=SCOPE
-    )
+    sp_oauth = create_spotify_oauth()
     session.clear()
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
-    session["token_info"] = token_info
+    session['token_info'] = token_info
     return redirect('/')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+def get_spotify():
+    token_info = session.get('token_info')
+    if not token_info:
+        return None
+    
+    sp_oauth = create_spotify_oauth()
+    
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+        session['token_info'] = token_info
+    
+    return spotipy.Spotify(auth=token_info['access_token'])
 
 @app.route('/search')
 def search():
     if 'token_info' not in session:
         return redirect('/login')
     
-    sp = spotipy.Spotify(auth=session['token_info']['access_token'])
+    sp = get_spotify()
     query = request.args.get('q')
     if not query:
         return jsonify([])

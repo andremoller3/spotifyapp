@@ -11,21 +11,25 @@
     <div class="container mt-5">
         <div class="text-center mb-4">
             <h1>Spotify Queue App</h1>
+            {% if not logged_in %}
             <a href="/login" class="btn btn-success btn-lg mb-4">Login com Spotify</a>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Buscar Música</h2>
-                <div class="input-group mb-3">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Digite o nome da música...">
-                    <button class="btn btn-primary" onclick="searchTracks()">Buscar</button>
+            {% else %}
+            <a href="/logout" class="btn btn-outline-danger mb-4">Logout</a>
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Buscar Música</h2>
+                    <div class="input-group mb-3">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Digite o nome da música...">
+                        <button class="btn btn-primary" onclick="searchTracks()">Buscar</button>
+                    </div>
+                    <div id="searchResults" class="list-group"></div>
                 </div>
-                <div id="searchResults" class="list-group"></div>
+                <div class="col-md-6">
+                    <h2>Fila de Reprodução</h2>
+                    <div id="queueList" class="list-group"></div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <h2>Fila de Reprodução</h2>
-                <div id="queueList" class="list-group"></div>
-            </div>
+            {% endif %}
         </div>
     </div>
 
