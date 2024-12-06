@@ -1,0 +1,46 @@
+.search-result {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-result img {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+}
+
+.search-result .track-info {
+    flex-grow: 1;
+}
+
+.search-result .track-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.search-result .track-artist {
+    color: #666;
+}
+
+.queue-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.queue-item img {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.btn-add {
+    margin-left: auto;
+}
