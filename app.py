@@ -5,6 +5,9 @@ from spotipy.oauth2 import SpotifyOAuth
 import os
 from dotenv import load_dotenv
 import logging
+import eventlet
+
+eventlet.monkey_patch()
 
 # Configurar logging
 logging.basicConfig(level=logging.DEBUG)
@@ -14,7 +17,16 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))
-socketio = SocketIO(app, cors_allowed_origins="*")
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['PREFERRED_URL_SCHEME'] = 'https'
+
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode='eventlet',
+    logger=True,
+    engineio_logger=True
+)
 
 # Configuração do Spotify
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
@@ -32,7 +44,8 @@ def create_spotify_oauth():
             client_secret=SPOTIPY_CLIENT_SECRET,
             redirect_uri=SPOTIPY_REDIRECT_URI,
             scope=SCOPE,
-            cache_path=None
+            cache_path=None,
+            show_dialog=True
         )
     except Exception as e:
         logger.error(f"Erro ao criar SpotifyOAuth: {str(e)}")
