@@ -9,28 +9,53 @@
 </head>
 <body>
     <div class="container mt-5">
-        <div class="text-center mb-4">
-            <h1>Spotify Queue App</h1>
-            {% if not logged_in %}
-            <a href="/login" class="btn btn-success btn-lg mb-4">Login com Spotify</a>
-            {% else %}
-            <a href="/logout" class="btn btn-outline-danger mb-4">Logout</a>
-            <div class="row">
-                <div class="col-md-6">
-                    <h2>Buscar Música</h2>
-                    <div class="input-group mb-3">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Digite o nome da música...">
-                        <button class="btn btn-primary" onclick="searchTracks()">Buscar</button>
-                    </div>
-                    <div id="searchResults" class="list-group"></div>
-                </div>
-                <div class="col-md-6">
-                    <h2>Fila de Reprodução</h2>
-                    <div id="queueList" class="list-group"></div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Spotify Queue App</a>
+                <div class="d-flex">
+                    {% if not logged_in %}
+                    <a href="/login" class="btn btn-success">Login com Spotify</a>
+                    {% else %}
+                    <a href="/logout" class="btn btn-outline-danger">Logout</a>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
+        </nav>
+
+        {% if not logged_in %}
+        <div class="text-center">
+            <h1 class="mb-4">Bem-vindo ao Spotify Queue App</h1>
+            <p class="lead mb-4">Faça login com sua conta do Spotify para começar a usar o app.</p>
+            <a href="/login" class="btn btn-success btn-lg">Login com Spotify</a>
         </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">Buscar Música</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Digite o nome da música...">
+                            <button class="btn btn-primary" onclick="searchTracks()">Buscar</button>
+                        </div>
+                        <div id="searchResults" class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">Fila de Reprodução</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="queueList" class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
